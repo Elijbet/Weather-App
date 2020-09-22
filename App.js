@@ -27,7 +27,7 @@ class App extends Component {
 
     let currentHour = new Date().getHours()
 
-    if (21 >= currentHour <= 24 || 1>= currentHour <= 4){
+    if (21 >= currentHour <= 24 || 1>= currentHour < 5){
       this.setState({
         background: 'dark'
       })
