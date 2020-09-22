@@ -6,6 +6,7 @@ import {
   View,
   Text,
   ImageBackground, 
+  Image
 } from 'react-native';
 
 import Dark  from './components/dark.js'
@@ -57,19 +58,17 @@ class App extends Component {
         temp: fahrenheit
       })
 
-
     }.bind(this))
     .catch(function () {
-     console.log("Promise Rejected");
+      console.log("Promise Rejected");
     });
   }
 
   contents(){
     return (
-      <View>
-        <Text>{this.state.background}</Text>
-        <Text>{this.state.precip}</Text>
-        <Text>{this.state.temp}</Text>
+      <View style={styles.smallContainer}>
+        {this.renderIcon()}
+        <Text style={styles.large}>{this.state.temp}°</Text>
       </View>
     )
   }
@@ -95,6 +94,23 @@ class App extends Component {
       )
     }
   }
+
+  renderIcon(){
+    if(this.state.precip == 'Clear'){
+      return(
+        <Image source={require('./assets/png/sun.png')} style={styles.tinyLogo}/>
+      )
+    } else if(this.state.precip == 'Clouds'){
+      return(
+        <Image source={require('./assets/png/cloudy.png')} style={styles.tinyLogo}/>
+      )
+    } else if(this.state.precip == 'Rainy'){
+      return(
+        <Image source={require('./assets/png/rain.png')} style={styles.tinyLogo}/>
+      )
+    }
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -107,13 +123,28 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column"
+    flexDirection: "column",
+  },
+  smallContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: 'center',
+    paddingTop: 100
   },
   text: {
     color: "grey",
     fontSize: 30,
     fontWeight: "bold"
   },
+  tinyLogo: {
+    width: 120,
+    height: 120,
+    tintColor: 'white'
+  },
+  large: {
+    fontSize: 70,
+    color: 'white'
+  }
 });
 
 export default App;
