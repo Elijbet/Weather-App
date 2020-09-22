@@ -27,19 +27,19 @@ class App extends Component {
 
     let currentHour = new Date().getHours()
 
-    if (21 >= currentHour <= 24 || 1>= currentHour < 5){
+    if (21 <= currentHour && currentHour <= 24 || 1 <= currentHour && currentHour < 5){
       this.setState({
         background: 'dark'
       })
-    } else if (5 >= currentHour < 8 ){
+    } else if (5 <= currentHour && currentHour < 8 ){
       this.setState({
         background: 'blue'
       })
-    } else if (8 >= currentHour < 19){
+    } else if (8 <= currentHour && currentHour < 19){
       this.setState({
         background: 'light'
       })
-    } else if (19 >= currentHour < 21){
+    } else if (19 <= currentHour < 21){
       this.setState({
         background: 'blue'
       })
@@ -53,6 +53,8 @@ class App extends Component {
       const celsius = temp - 273;
       let fahrenheit = Math.floor(celsius * (9/5) + 32);
 
+
+      console.log('esponse.data.weather[0].main', response.data)
       this.setState({ 
         precip: response.data.weather[0].main,
         temp: fahrenheit
@@ -108,6 +110,10 @@ class App extends Component {
       return(
         <Image source={require('./assets/png/rain.png')} style={styles.tinyLogo}/>
       )
+    } else {
+      return(
+        <Image source={require('./assets/png/weather-vane.png')} style={styles.tinyLogo}/>
+      )
     }
   }
 
@@ -129,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: 'center',
-    paddingTop: 100
+    paddingTop: 100,
   },
   text: {
     color: "grey",
@@ -139,7 +145,8 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 120,
     height: 120,
-    tintColor: 'white'
+    tintColor: 'white',
+    marginRight: 40
   },
   large: {
     fontSize: 70,
