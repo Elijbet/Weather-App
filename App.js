@@ -1,12 +1,14 @@
 
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   View,
   Text,
   ImageBackground, 
-  Image
+  Image,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 
 import Dark  from './components/dark.js'
@@ -14,13 +16,14 @@ import Light from './components/light.js'
 import Blue from './components/blue.js'
 
 import axios from 'axios';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 class App extends Component {
 
   state = {
     background: null,
     precip: null,
-    temp: null
+    temp: null,
   }
 
   componentDidMount() {
@@ -53,8 +56,6 @@ class App extends Component {
       const celsius = temp - 273;
       let fahrenheit = Math.floor(celsius * (9/5) + 32);
 
-
-      console.log('esponse.data.weather[0].main', response.data)
       this.setState({ 
         precip: response.data.weather[0].main,
         temp: fahrenheit
@@ -64,6 +65,21 @@ class App extends Component {
     .catch(function () {
       console.log("Promise Rejected");
     });
+
+    this.timer = setInterval(() => this.sendLocalNotification(), 5000);
+
+    PushNotificationIOS.addEventListener(
+      'localNotification',
+      this.onLocalNotification,
+    );
+  }
+
+  componentWillUnmount() {
+    PushNotificationIOS.removeEventListener(
+      'localNotification',
+      this.onLocalNotification,
+    );
+    clearInterval(this.timer)
   }
 
   contents(){
@@ -116,6 +132,30 @@ class App extends Component {
       )
     }
   }
+
+  sendLocalNotification = () => {
+    PushNotificationIOS.presentLocalNotification({
+      alertTitle: 'Your Weather Report',
+      alertBody: `${this.state.precip}, ${this.state.temp}°`,
+      applicationIconBadgeNumber: 1,
+    });
+  };
+
+  onLocalNotification = (notification) => {
+    const isClicked = notification.getData().userInteraction === 1
+
+    Alert.alert(
+      'Local Notification Received',
+      `${notification.getTitle()}
+      ${notification.getMessage()}`,
+      [
+        {
+          text: 'Dismiss',
+          onPress: null,
+        },
+      ],
+    )
+  };
 
   render() {
     return(
